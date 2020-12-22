@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.*;
 public class StudentController {
     @Autowired
     private ExceptionService  exceptionService ;
-
+    @GetMapping("/test")
+    public String test () {
+       return  "sb33";
+    }
     @PostMapping("/getException")
     public QueryResponseResult getException(@RequestBody ParamsBean paramsBean) {
         return exceptionService.getList(paramsBean);
@@ -24,8 +27,8 @@ public class StudentController {
         return exceptionService.getBorad(workshop ,line);
     }
     @GetMapping("/sb")
-    public  String getString () {
-        return  "aaa" ;
+    public  void getString () {
+        exceptionService.updateHandler();
     }
 
 /*    @Autowired

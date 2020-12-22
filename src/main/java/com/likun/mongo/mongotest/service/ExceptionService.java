@@ -5,11 +5,16 @@ import com.likun.mongo.mongotest.utils.response.CommonCode;
 import com.likun.mongo.mongotest.utils.response.QueryResponseResult;
 import com.likun.mongo.mongotest.utils.response.QueryResult;
 import com.mongodb.BasicDBObject;
+import com.mongodb.client.result.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.schema.JsonSchemaObject;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -153,7 +158,8 @@ public class ExceptionService {
 
 
     public List<BasicDBObject>    queryBigScreen ( String workshop ,String line ){
-        Criteria c2 = Criteria.where("cdt").gte(getBeforeTwoDay()).lte(new Date());
+        Criteria c2 = Criteria.where("cdt").gte(getBeforeTwoDay(2)).lte(new Date()).and("handled").is(false);
+//        Criteria c2 = Criteria.where("cdt").is("2020-08-12T10:54:56.000+0000").and("handled").is(true);
         AggregationOperation match2 = Aggregation.match(c2);
         //拼装关联信息
         LookupOperation lookupOperation = LookupOperation.newLookup().
@@ -245,16 +251,23 @@ public class ExceptionService {
     }
 
 
-    public  Date getBeforeTwoDay(){
+    public  Date getBeforeTwoDay(int day){
         Date date = new Date() ;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.add(Calendar.DATE, -2);
+        calendar.add(Calendar.DATE, -day);
         Date time = calendar.getTime();
         System.out.println("天： " + time.getDay());
         return  time  ;
 
 
+    }
+
+    public void  updateHandler(){
+        Criteria c2 = Criteria.where("cdt").lte(getBeforeTwoDay(3)).and("handleDateTime").exists(false);
+        Update update = Update.update("handled", true).set("handler", "5b384b2cd8712064f101e31e").set("handleDateTime", new Date());
+        UpdateResult t_exceptionRecord = template.updateMulti(Query.query(c2), update, "T_ExceptionRecord");
+        System.out.println("一影响 行数："+t_exceptionRecord.getModifiedCount());
     }
 
 

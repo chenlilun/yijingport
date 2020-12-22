@@ -6,6 +6,7 @@ import com.likun.mongo.mongotest.domain.Grade;
 import com.likun.mongo.mongotest.domain.Item;
 import com.likun.mongo.mongotest.domain.Student;
 import com.likun.mongo.mongotest.domain.Teacher;
+import com.likun.mongo.mongotest.service.PackboxService;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.result.UpdateResult;
 import com.mongodb.internal.operation.FindAndUpdateOperation;
@@ -37,6 +38,20 @@ class StudentGradeTest {
 
     @Autowired
     private StudentDao studentDao;
+    @Autowired
+    private PackboxService packboxService;
+    @Test
+    void testQuery(){
+        packboxService.findAllBoxAndPull();
+    }
+    @Test
+    void testStu(){
+        packboxService.test();
+    }
+    @Test
+    void aaaa(){
+        packboxService.ttt();
+    }
     @Test
     void addStu() {
         for (int i = 0; i < 5; i++) {
