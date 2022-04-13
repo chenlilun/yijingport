@@ -74,7 +74,7 @@ public class PostYunbiaoBean implements Serializable {
     private String teamInfo;
     private List<ProductInfoEntity> productInfo;
     private String uId;
-    private Integer sequence;
+    private String sequence;
     private String material;
     private String lgort;
     private String foamType;
@@ -108,6 +108,7 @@ public class PostYunbiaoBean implements Serializable {
         private int printCount;
         private String operatorId;
         private String printTime;
+        private String sequence;
 
 
 

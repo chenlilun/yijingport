@@ -84,7 +84,12 @@ public class PackboxService {
                 bean.setLgort(b.getSapT001l());
                 bean.setFoamType(b.getFoamType());
                 bean.setGrade(getGrade(b.getGrade()));
+                String value=b.getCode();
+                 int length=value.length();
 
+                if(length>=3){
+                    bean.setSequence(value.substring(length-3,length));
+                }
                 bean.setClassesInfo(getPrintClass(b.getPrintClass()));  // 甲乙丙丁
                 bean.setTeamInfo(getTeam(b.getPrintClass())); // ABC
                 List<PostYunbiaoBean.ProductInfoEntity> list = new ArrayList<>() ;
@@ -97,9 +102,15 @@ public class PackboxService {
                     productInfoEntity.setNetWeight(b.getNetWeight());
                 }
                 productInfoEntity.setTeam(getTeam(b.getPrintClass()));
+                productInfoEntity.setClasses(getPrintClass(b.getPrintClass()));
                 productInfoEntity.setNewProductCode(b.getCode());
                 productInfoEntity.setOperatorId("MANUAL");
                 productInfoEntity.setPrintFlag(false);
+
+                if(length>=3){
+                    productInfoEntity.setSequence(value.substring(length-3,length));
+                }
+
                 productInfoEntity.setSilkCount(b.getSilkCount());
                 productInfoEntity.setSilkWeight(batch.getSilkWeight());
                 productInfoEntity.setProductDate(getProDuctDate(b.getCdt()));
@@ -113,7 +124,8 @@ public class PackboxService {
                 headers.put("Content-Type", "application/json");
 //        String printData = okHttpUtils.httpPostJson("http://10.77.0.24:8090/api/doff/getSilkOnLineForWorkshop", headers, postData);
                 System.out.println(postData);
-                String printData = okHttpUtils.httpPostJson("http://10.77.0.29:8080/webapi/process/LOA_WMS/ProducePalletAsync", headers, postData);
+//                String printData = okHttpUtils.httpPostJson("http://10.77.0.29:8080/webapi/process/LOA_WMS/ProducePalletAsync", headers, postData);
+                String printData = okHttpUtils.httpPostJson("http://10.61.0.19:8080/webapi/process/LOA/ProducePalletAsync", headers, postData);
                 System.out.println("AAAAAAAA" + printData);
                 if(!ObjectUtils.isEmpty(printData)&&printData.contains("200")){
                     //                printData.if
