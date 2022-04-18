@@ -62,8 +62,12 @@ public class T_PackageBox implements Serializable {
     private String _id;
     private Date mdt;
     private Integer foamNum;
+    private Integer printCount;
+    private Boolean inWarehouse;
     private Date budat;
     private String postFlag;
+    private String[] silkCarRecords ;
+
 
 
 }

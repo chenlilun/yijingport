@@ -6,6 +6,7 @@ import java.util.Date;
 public class Test {
     public static void main(String[] args) {
         getBeforeTwoDay() ;
+        System.out.println("010220220413GE07059999999999999999999907A01333300573".substring(13,14));
     }
 
     public static Date getBeforeTwoDay(){
