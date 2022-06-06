@@ -3,6 +3,7 @@ package com.likun.mongo.mongotest;
 import com.likun.mongo.mongotest.dao.ExceptionRepository;
 import com.likun.mongo.mongotest.domain.*;
 import com.likun.mongo.mongotest.domain.Class;
+import com.likun.mongo.mongotest.interf.IGlobalCache;
 import com.likun.mongo.mongotest.utils.MongoDBPageModel;
 import com.likun.mongo.mongotest.utils.SpringbootMongoDBPageable;
 import com.mongodb.BasicDBObject;
@@ -19,6 +20,8 @@ import org.bson.types.ObjectId;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.omg.CORBA.SetOverrideType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,67 +33,44 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.core.schema.JsonSchemaObject;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 class MongotestApplicationTests {
     @Autowired
     private MongoTemplate template;
     @Autowired
     private ExceptionRepository exceptionRepository;
-
+    @Autowired
+    private IGlobalCache globalCache;
     @Test
     void contextLoads() {
-    }
 
-    @Test
-    void t1() {
-        List<User> userList = template.findAll(User.class);
+      /*  Set<String> keys = globalCache.keys("*SilkCarRuntime*");
+        keys.forEach((k)->{
+            Map<Object, Object> hmget = globalCache.hmget(k);
+            System.out.println(hmget);
+            hmget.forEach((ks,kv)->{
 
-        if (userList != null && userList.size() > 0) {
-            userList.forEach(user -> {
-                System.out.println(user.toString());
+                if(kv.toString().contains("\"operator\":{\"id\":\"if_warehouse\"}")){
+                    System.out.println("有了key===="+k.toString());
+                    System.out.println("有了value===="+kv.toString());
+//                    globalCache.del(k);
+                }
+
             });
-        }
+
+        });*/
     }
 
-    @Test
-    void add() {
-        Class u = new Class();
-        u.setClassName("九班");
-        template.save(u);
-
-    }
-
-    @Test
-    void findById() {
-        Teacher u = template.findById("5ef8b4b0cd40580336f9bf85", Teacher.class);
-        System.out.println(u);
-//        Query query = new Query(Criteria.where("na.me")is("陈老师")
 
 
-//        );
-
-  /*      List<Teacher> users = template.find(query, Teacher.class);
-        users.stream().forEach(System.out::print);*/
-    }
-
-    @Test
-    void testQueary() {
-/*        Query query  = new Query();
-        query.addCriteria( new Criteria("_id").is("5d287fa3fc15c200017d2d04"));
-        ExceptionBean all = template.findOne(query  ,  ExceptionBean.class,"T_ExceptionRecord");
-        System.out.println(all);*/
-        ExceptionBean t_exceptionRecord =  template.findById("5d284510fc15c2000149d8fe", ExceptionBean.class);
-        System.out.println(t_exceptionRecord);
-/*        Optional<ExceptionBean> byId = exceptionRepository.findById("5d2844dcfc15c2000149d115");
-        System.out.println(byId.get());*/
-
-    }
 
     /**
      * 模糊查询
@@ -98,7 +78,7 @@ class MongotestApplicationTests {
      *
      * @return ApiResponse
      */
-    @Test
+//    @Test
     void findStudentsLikeName() {
         String regex = String.format("%s%s%s", "^.*", "zs", ".*$");
         Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
@@ -108,13 +88,13 @@ class MongotestApplicationTests {
         students.stream().forEach(System.out::print);
     }
 
-    @Test
+//    @Test
     void delete() {
         Query query = new Query(Criteria.where("name").is("zs1"));
         template.remove(query, "teacher");
     }
 
-    @Test
+//    @Test
     void update() {
         Query query = new Query(Criteria.where("name").is("wangwu2"));
         Update update = new Update();
@@ -126,7 +106,7 @@ class MongotestApplicationTests {
     }
 
     //分页查询
-    @Test
+//    @Test
     void PageQuery() {
         //利用工具类拼装分页信息
         SpringbootMongoDBPageable pageable = new SpringbootMongoDBPageable();
@@ -157,7 +137,7 @@ class MongotestApplicationTests {
     }
 
     //分页聚合查询（多表多条件关联分页查询）
-    @Test
+//    @Test
     public void PageQuery2() throws Exception {
         //mongodb中有两个表，一个是人物表 一个是宠物表，一个人可以有多个宠物
         //人物表字段为 String id, Integer age,String remark;
@@ -219,7 +199,7 @@ class MongotestApplicationTests {
     }
 
 
-    @Test
+//    @Test
     void queryException() {
         Criteria c2 = Criteria.where("cdt").gte(strToDateLong("2020-06-03 00:00:00")).lte(strToDateLong("2020-06-04 00:00:00"));
         AggregationOperation match2 = Aggregation.match(c2);
@@ -446,7 +426,7 @@ class MongotestApplicationTests {
 
 
     }
-    @Test
+//    @Test
     void T2 (){
         ParamsBean paramsBean =  new ParamsBean() ;
         paramsBean.setWorkshop("C");

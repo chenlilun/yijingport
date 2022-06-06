@@ -3,16 +3,20 @@ package com.likun.mongo.mongotest.controllor;
 import com.likun.mongo.mongotest.dao.StudentDao;
 import com.likun.mongo.mongotest.domain.ParamsBean;
 import com.likun.mongo.mongotest.domain.Student;
+import com.likun.mongo.mongotest.domain.T_PackageBox;
 import com.likun.mongo.mongotest.service.ExceptionService;
+import com.likun.mongo.mongotest.service.PackboxService;
 import com.likun.mongo.mongotest.utils.response.QueryResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/exception")
+@RequestMapping("/yunbiao")
 public class StudentController {
     @Autowired
     private ExceptionService  exceptionService ;
+    @Autowired
+    private PackboxService packboxService ;
     @GetMapping("/test")
     public String test () {
        return  "sb33";
@@ -29,6 +33,22 @@ public class StudentController {
     @GetMapping("/sb")
     public  void getString () {
         exceptionService.updateHandler();
+    }
+
+    @PostMapping("/updatePackageBox")
+    public QueryResponseResult updatePackageBox(@RequestBody T_PackageBox t_packageBox) {
+        return packboxService.updatePackageBox(t_packageBox);
+    }
+
+    @GetMapping("/delRedis/{silkCar}")
+    public QueryResponseResult delRedis(@PathVariable("silkCar") String silkCar) {
+//        return packboxService.delRedisByPackaged(silkCar);
+        return null;
+    }
+    @GetMapping("/delRedisByCar/{silkCar}")
+    public QueryResponseResult delRedisByCar(@PathVariable("silkCar") String silkCar) {
+//        return packboxService.delRedisByCar(silkCar);
+        return null;
     }
 
 /*    @Autowired

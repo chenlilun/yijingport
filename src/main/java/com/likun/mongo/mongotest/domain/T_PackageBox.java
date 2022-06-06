@@ -6,6 +6,8 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 @Document(collection = "T_PackageBox")
 @Data
 public class T_PackageBox implements Serializable {
@@ -43,6 +45,7 @@ public class T_PackageBox implements Serializable {
     private String type;
     private String packageType;
     private int silkCount;
+    private int smallPacageBoxCount;
     private double pipeType;
     private double tare;
     private String budatClass;
@@ -50,6 +53,8 @@ public class T_PackageBox implements Serializable {
     private Date printDate;
     private String batch;
     private String palletType;
+    private String palletCode;
+    private String automaticPackeLine;
     private String command;
     private Date cdt;
     private double grossWeight;
@@ -67,6 +72,8 @@ public class T_PackageBox implements Serializable {
     private Date budat;
     private String postFlag;
     private String[] silkCarRecords ;
+    private String[] silks ;
+    private List<String> silkCarRecordsSmall ;
 
 
 

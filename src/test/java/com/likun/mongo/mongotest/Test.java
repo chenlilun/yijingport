@@ -7,6 +7,8 @@ public class Test {
     public static void main(String[] args) {
         getBeforeTwoDay() ;
         System.out.println("010220220413GE07059999999999999999999907A01333300573".substring(13,14));
+        final StringBuilder sb = new StringBuilder("JikonAdapterSilkCarInfoFetchEvent").append("4444request9999");
+        System.out.println(sb.toString());
     }
 
     public static Date getBeforeTwoDay(){

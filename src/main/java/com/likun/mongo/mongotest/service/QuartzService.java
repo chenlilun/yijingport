@@ -26,9 +26,9 @@ public class QuartzService {
         System.out.println("now time:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 //        exceptionService.updateHandler();
     }
+//    @Scheduled(fixedDelay = 1*60*2)
     @Scheduled(fixedDelay = 1000*60*2)
     public void two(){
-        System.out.println("**********************--------------***********");
         packboxService.findAllBoxAndPull();
     }
 

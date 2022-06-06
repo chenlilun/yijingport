@@ -11,15 +11,27 @@
     <groupId>com.likun.mongo</groupId>
     <artifactId>mongotest</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
-    <name>mongotest</name>
-    <description>Demo project for Spring Boot</description>
+    <packaging>jar</packaging>
+    <name>gx</name>
 
+    <description>Demo project for Spring Boot</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>8</java.version>
     </properties>
 
+
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+
+
         <!--okhttp依赖-->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
@@ -86,6 +98,11 @@
             <artifactId>mongo-java-driver</artifactId>
             <version>3.12.2</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -93,9 +110,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <mainClass>com.likun.mongo.mongotest.MongotestApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
-        <finalName>abc</finalName>
+        <finalName>gx</finalName>
     </build>
 
 </project>

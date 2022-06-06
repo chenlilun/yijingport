@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 public enum CommonCode implements ResultCode{
 
-    SUCCESS(true,10000,"操作成功！"),
+    SUCCESS(true,200,"操作成功！"),
     FAIL(false,11111,"操作失败！"),
     UNAUTHENTICATED(false,10001,"此操作需要登陆系统！"),
     UNAUTHORISE(false,10002,"权限不足，无权操作！"),

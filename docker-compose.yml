@@ -1,0 +1,17 @@
+version: "1"
+services:
+  gx-service:
+    #指定容器名字
+    container_name: gx
+    restart: always
+    image: java:8
+    volumes:
+      #本地jar包路径
+      - /usr/local/gx/gx.jar:gx.jar
+      - /usr/local/gx/logs:logs
+      - /etc/localtime:/etc/localtime
+    ports:
+      - "8088:8088"
+    #启动容器后执行的命令
+    entrypoint: java -server -Xms256m -Xmx256m -jar -Dserver.port=8088 -Dspring.profiles.active=local gx.jar
+
