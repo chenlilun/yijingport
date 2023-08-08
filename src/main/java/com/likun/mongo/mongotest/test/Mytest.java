@@ -1,12 +1,15 @@
 package com.likun.mongo.mongotest.test;
 
 
+import java.util.Date;
+import java.util.stream.Stream;
 
 public class Mytest {
     public static void main(String[] args) {
-        SungSum sungSum = new SungSum();
-        OpenAndClose openAndClose = new OpenAndClose();
-        openAndClose.open(sungSum);
+            Date date = new Date() ;
+        System.out.println(date.toString());
+        Date date1 = new Date(date.toString()) ;
+        System.out.println(date1);
     }
 
 
@@ -32,5 +35,10 @@ class SungSum implements ITV {
     @Override
     public void play() {
         System.out.println("三星电视运行......");
+        //
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new Date().toString());
     }
 }

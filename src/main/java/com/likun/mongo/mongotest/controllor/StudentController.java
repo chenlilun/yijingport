@@ -10,6 +10,8 @@ import com.likun.mongo.mongotest.utils.response.QueryResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/yunbiao")
 public class StudentController {
@@ -42,7 +44,11 @@ public class StudentController {
 
     @GetMapping("/delRedis/{silkCar}")
     public QueryResponseResult delRedis(@PathVariable("silkCar") String silkCar) {
-//        return packboxService.delRedisByPackaged(silkCar);
+        try {
+            return packboxService.delRedisByPackaged(silkCar);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
     @GetMapping("/delRedisByCar/{silkCar}")

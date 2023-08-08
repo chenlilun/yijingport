@@ -25,6 +25,7 @@ public class OkHttpUtils {
 
     private static final String HTTP_JSON = "application/json; charset=utf-8";
     private static final String HTTP_FORM = "application/x-www-form-urlencoded; charset=utf-8";
+    private static final String HTTP_FORM_DATA = "multipart/form-data; boundary=-------Embt-Boundary--4017BD1C4EE1A590; charset=UTF-8";
 
     private static final OkHttpClient okHttpClient = new OkHttpClient.Builder()
             .connectTimeout(120, TimeUnit.SECONDS)
@@ -180,8 +181,9 @@ public class OkHttpUtils {
      * @param headers
      * @return
      */
+
     public static String postDataByForm(String url, String content, Map<String, String> headers) {
-        MediaType JSON = MediaType.parse(HTTP_FORM);
+        MediaType JSON = MediaType.parse(HTTP_FORM_DATA);
         RequestBody body = RequestBody.create(JSON, content);
 
         Request.Builder requestBuilder = new Request.Builder().url(url);

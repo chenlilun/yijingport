@@ -1,6 +1,7 @@
 package com.likun.mongo.mongotest.service;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.likun.mongo.mongotest.domain.*;
 import com.likun.mongo.mongotest.interf.IGlobalCache;
 import com.likun.mongo.mongotest.okhttp.OkHttpUtils;
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -585,41 +589,105 @@ public class PackboxService {
     @Autowired
     private IGlobalCache globalCache;
 
-    public QueryResponseResult delRedisByPackaged(String silkcar) {
+    public QueryResponseResult delRedisByPackaged(String silkcar) throws  IOException {
         Set<String> keys = null;
+        BufferedWriter writer = null;
         if (!StringUtils.isEmpty(silkcar)&&"1".equals(silkcar)) {
-            keys = globalCache.keys("*SilkCarRuntime*");
+            keys = globalCache.keys("*RECORD*");
         } else {
             keys = globalCache.keys("*" + silkcar + "*");
         }
         if (!ObjectUtils.isEmpty(keys) && keys.size() > 0) {
             AtomicInteger i  = new AtomicInteger();
-            keys.forEach((k) -> {
+            try {
+                 writer = new BufferedWriter(new FileWriter("D:\\aaaaa.txt"));
+                BufferedWriter finalWriter = writer;
+                keys.forEach((k) -> {
                 i.getAndIncrement();
-                System.out.println("循环数量&&&&&&&&&&&："+i.get());
-                Map<Object, Object> hmget = globalCache.hmget(k);
-                hmget.forEach((ks, kv) -> {
-                    if (kv.toString().contains("\"operator\":{\"id\":\"if_warehouse\"}")) {
-                        SilkcarHisBean silkcarHisBean = new Gson().fromJson(kv.toString(), SilkcarHisBean.class);
-                        if(!ObjectUtils.isEmpty(silkcarHisBean)){
-                            String id = silkcarHisBean.getPackageBox().id;
-                            T_PackageBox packageBox = template.findById(id, T_PackageBox.class);
-                            System.out.println(packageBox.getType());
-                            if(!ObjectUtils.isEmpty(packageBox)){
-                                if("BIG_SILK_CAR".equals(packageBox.getType())){
-                                    globalCache.del(k);
-                                }else {
-                                    System.out.println("=====NONONONO==="+packageBox.get_id());
-                                }
+//                System.out.println("循环数量&&&&&&&&&&&："+i.get());
+//                Map<Object, Object> hmget = globalCache.hmget(k);
+                if(k.contains("FACTORY")){
 
-                            }
-                        }
+                        // 创建一个字符串数组
+                        // Create a string array
+                        String[] array = {"我爱你一年", "我不爱你"};
+                        // 创建一个文件写入器，并用缓冲写入器包装它
+                        // Create a file writer and wrap it with a buffered writer
 
+                        // 遍历数组中的每个元素，并将其写入文件中，每个元素占一行
+                        // Loop through each element in the array and write it to the file, one element per line
+
+
+                    try {
+                        finalWriter.write(k+":"+globalCache.sGet(k));
+                        finalWriter.newLine();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
 
-                });
+                    // 关闭写入器
+                        // Close the writer
+
+                        // Print a success message
+                        System.out.println("写入成功");
+
+                }
+     /*           if(i.get()>6){
+                   try {
+                       String date = (String) globalCache.hget(k, "startDateTime");
+
+                       if(ObjectUtils.isEmpty(date)){
+                           System.out.println("date"+date);
+                           System.out.println("KKKKK:"+k);
+//                           System.out.println("都可看到"+globalCache.hmget(k));
+                       }else {
+//                           if(Long.parseLong(date)<  Long.parseLong("1682527026000")){
+//                               System.out.println("昨天:"+k   );
+
+//                           }
+                       }
+
+                   }catch (Exception e){
+                       System.out.println("错无"+k);
+
+                   }
+
+
+                }*/
+
+//                hmget.forEach((ks, kv) -> {
+//                    System.out.println("kv"+kv.toString());
+////                    Carbean carbean = new Gson().fromJson(kv.toString(),Carbean.class) ;
+//                    System.out.println("kv"+kv.toString());
+//          /*          if (kv.toString().contains("\"operator\":{\"id\":\"if_warehouse\"}")) {
+//                        SilkcarHisBean silkcarHisBean = new Gson().fromJson(kv.toString(), SilkcarHisBean.class);
+//                        if(!ObjectUtils.isEmpty(silkcarHisBean)){
+//                            String id = silkcarHisBean.getPackageBox().id;
+//                            T_PackageBox packageBox = template.findById(id, T_PackageBox.class);
+//                            System.out.println(packageBox.getType());
+//                            if(!ObjectUtils.isEmpty(packageBox)){
+//                                if("BIG_SILK_CAR".equals(packageBox.getType())){
+//                                    globalCache.del(k);
+//                                }else {
+//                                    System.out.println("=====NONONONO==="+packageBox.get_id());
+//                                }
+//
+//                            }
+//                        }
+//
+//                    }*/
+//
+//                });
 
             });
+            } catch (IOException e) {
+                // Print an error message
+                System.out.println("写入失败");
+                e.printStackTrace();
+            }finally {
+                writer.close();
+
+            }
         }
 
         return    new QueryResponseResult(CommonCode.SUCCESS,   null) ;
