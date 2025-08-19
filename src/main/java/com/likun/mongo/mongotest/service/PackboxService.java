@@ -2,6 +2,7 @@ package com.likun.mongo.mongotest.service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.likun.mongo.mongotest.domain.*;
 import com.likun.mongo.mongotest.interf.IGlobalCache;
 import com.likun.mongo.mongotest.okhttp.OkHttpUtils;
@@ -21,6 +22,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,8 +42,8 @@ public class PackboxService {
         s.setSex("aa");
         s.setStuName("aa");
         DeleteResult remove = template.remove(s);
-        System.out.println("ssss" + remove.getDeletedCount());
-        System.out.println("sssdddds" + remove.wasAcknowledged());
+//        System.out.println("ssss" + remove.getDeletedCount());
+//        System.out.println("sssdddds" + remove.wasAcknowledged());
     }
 
     public void findAllBoxAndPull() {
@@ -57,8 +60,8 @@ public class PackboxService {
 
         String strDateFormat = "yyyy-MM-dd HH:mm:ss";
         SimpleDateFormat spl = new SimpleDateFormat(strDateFormat);
-        System.out.println("begin==================" + spl.format(begin.getTime()));
-        System.out.println("end==================" + spl.format(end.getTime()));
+//        System.out.println("begin==================" + spl.format(begin.getTime()));
+//        System.out.println("end==================" + spl.format(end.getTime()));
         Criteria c2 = Criteria.where("printDate").gte(begin.getTime()).lte(end.getTime()).and("type").ne("AUTO").and("postFlag").exists(false);
 //        Criteria c2 = Criteria.where("code").is("010120220528GF011025101304");
 //        template.findAll(Query.query(c2),"T_PackageBox") ;
@@ -115,11 +118,10 @@ public class PackboxService {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
 //        String printData = okHttpUtils.httpPostJson("http://10.77.0.24:8090/api/doff/getSilkOnLineForWorkshop", headers, postData);
-                System.out.println(postData);
 //                String printData = okHttpUtils.httpPostJson("http://10.77.0.29:8080/webapi/process/LOA_WMS/ProducePalletAsync", headers, postData);
                 String printData = okHttpUtils.httpPostJson("http://10.2.0.221:8081/webapi/process/LOA/ProducePallet", headers, postData);
 //                String printData = okHttpUtils.httpPostJson("http://192.168.0.147:8081/webapi/process/LOA/ProducePallet", headers, postData);
-                System.out.println("AAAAAAAA" + printData);
+//                System.out.println("AAAAAAAA" + printData);
                 if (!ObjectUtils.isEmpty(printData) && printData.contains("\"status\":200")) {
                     //                printData.if
                     b.setPostFlag("post");
@@ -226,7 +228,7 @@ public class PackboxService {
         calendar.setTime(cdt);
         calendar.add(Calendar.HOUR_OF_DAY, 8);
         String format = spl.format(calendar.getTime());
-        System.out.println("创建时间=======" + format);
+//        System.out.println("创建时间=======" + format);
         return format;
     }
 
@@ -391,13 +393,58 @@ public class PackboxService {
         stu.setAaaBbb("aaa");
         template.save(stu);
     }
+    /**
+     * 格式化 JSON 字符串中的日期字段
+     * @param jsonStr 原始 JSON 字符串
+     * @param dateField 需要格式化的日期字段名
+     * @return 格式化后的 JSON 字符串
+     */
+    public static String formatDateField(String jsonStr, String dateField) {
+        try {
+            // 解析 JSON 字符串
+            JsonObject jsonObject = JsonParser.parseString(jsonStr).getAsJsonObject();
 
+            if (jsonObject.has(dateField)) {
+                String originalDate = jsonObject.get(dateField).getAsString();
+
+                // 定义日期格式转换器
+                DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy h:mm:ss a", Locale.ENGLISH);
+                DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                // 转换日期格式
+                LocalDateTime dateTime = LocalDateTime.parse(originalDate, inputFormatter);
+
+                // 增加8小时
+                dateTime = dateTime.plusHours(8);
+
+                // 格式化日期
+                String formattedDate = dateTime.format(outputFormatter);
+
+                // 更新 JSON 中的字段值
+                jsonObject.addProperty(dateField, formattedDate);
+            }
+
+            // 返回格式化后的 JSON 字符串
+            return jsonObject.toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 发生异常时返回原始字符串
+            return jsonStr;
+        }
+    }
     public QueryResponseResult updatePackageBox(T_PackageBox post) {
+        String newMesPostData = new Gson().toJson(post);
+        System.out.println("原始数据:" + newMesPostData);
+        String formattedJson =formatDateField(newMesPostData, "budat");
+
         try {
             Criteria c = Criteria.where("code").is(post.getCode());
 //        template.findAll(Query.query(c2),"T_PackageBox") ;
             List<T_PackageBox> t_packageBoxs = template.find(Query.query(c), T_PackageBox.class, "T_PackageBox");
             T_PackageBox t;
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Content-Type", "application/json");
             if (t_packageBoxs.size() > 0) {
                 t = t_packageBoxs.get(0);
                 if (ObjectUtils.isEmpty(post.getType())) {
@@ -473,16 +520,21 @@ public class PackboxService {
                 //调用入库接口
                 Gson gson = new Gson();
                 String postData = gson.toJson(t);
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-//        String printData = okHttpUtils.httpPostJson("http://10.77.0.24:8090/api/doff/getSilkOnLineForWorkshop", headers, postData);
-                System.out.println(postData);
+
+//                System.out.println("newMes参数1" + postData);
 //                String printData = okHttpUtils.httpPostJson("http://10.77.0.29:8080/webapi/process/LOA_WMS/ProducePalletAsync", headers, postData);
                 String printData = okHttpUtils.httpPostJson("http://10.2.0.215:9999/warehouse/PackageBoxFetchEvent", headers, postData);
-//                String printData = okHttpUtils.httpPostJson("http://192.168.0.147:8081/webapi/process/LOA/ProducePallet", headers, postData);
-                System.out.println("AAAAAAAA" + printData);
+//                System.out.println("AAABBBB" + printData);
+//                String newMes = okHttpUtils.httpPostJson("http://192.168.129.252:8090/open/automaticintegration/production/yunbiaoUpdatePackage", headers, newMesPostData);
+//                System.out.println("newMes" + newMes);//                System.out.println("newMes3" + postData);
                 QueryResponseResult queryResponseResult = new QueryResponseResult(CommonCode.SUCCESS, null);
                 return queryResponseResult;
+            }else {
+
+
+                System.out.println("newMes参数2" + formattedJson);
+                String newMes = okHttpUtils.httpPostJson("http://10.2.0.233:8090/open/automaticintegration/production/yunbiaoUpdatePackage", headers, formattedJson);
+                System.out.println("newMes2结果" + newMes);
             }
 
         } catch (Exception e) {

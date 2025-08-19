@@ -127,18 +127,16 @@ public class OkHttpUtils {
      * @return
      */
     public static String httpPostJson(String url, Map<String, String> headers, String json) {
-        if (CollectionUtils.isEmpty(headers)) {
-            httpPostJson(url, json);
-        }
-
         MediaType JSON = MediaType.parse(HTTP_JSON);
         RequestBody body = RequestBody.create(JSON, json);
         Request.Builder requestBuilder = new Request.Builder().url(url);
-        headers.forEach((k, v) -> requestBuilder.addHeader(k, v));
+        if (headers != null) {
+            headers.forEach(requestBuilder::addHeader);
+        }
         Request request = requestBuilder.post(body).build();
-        try {
-            Response response = okHttpClient.newCall(request).execute();
-            if (response.code() == 200) {
+
+        try (Response response = okHttpClient.newCall(request).execute()) {
+            if (response.isSuccessful() && response.body() != null) {
                 log.info("http Post 请求成功; [url={}, requestContent={}]", url, json);
                 return response.body().string();
             } else {
@@ -149,6 +147,7 @@ public class OkHttpUtils {
         }
         return null;
     }
+
 
     public static String httpPostJson2(String url, Map<String, String> headers, String json) {
         if (CollectionUtils.isEmpty(headers)) {
